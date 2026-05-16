@@ -819,22 +819,7 @@ plan *X(mkplan_f_d)(planner *ego, problem *p,
 /*-----------------------------------------------------------------------*/
 /* stride.c: */
 
-/* If PRECOMPUTE_ARRAY_INDICES is defined, precompute all strides. */
-#if (defined(__i386__) || defined(__x86_64__) || _M_IX86 >= 500) && !defined(FFTW_LDOUBLE)
-#define PRECOMPUTE_ARRAY_INDICES
-#endif
-
 extern const INT X(an_INT_guaranteed_to_be_zero);
-
-#ifdef PRECOMPUTE_ARRAY_INDICES
-typedef INT *stride;
-#define WS(stride, i)  (stride[i])
-extern stride X(mkstride)(INT n, INT s);
-void X(stride_destroy)(stride p);
-/* hackery to prevent the compiler from copying the strides array
-   onto the stack */
-#define MAKE_VOLATILE_STRIDE(nptr, x) (x) = (x) + X(an_INT_guaranteed_to_be_zero)
-#else
 
 typedef INT stride;
 #define WS(stride, i)  (stride * i)
@@ -866,7 +851,6 @@ typedef INT stride;
      (nptr <= ESTIMATED_AVAILABLE_INDEX_REGISTERS ?     \
         0 :                                             \
       ((x) = (x) ^ X(an_INT_guaranteed_to_be_zero)))
-#endif /* PRECOMPUTE_ARRAY_INDICES */
 
 /*-----------------------------------------------------------------------*/
 /* solvtab.c */
